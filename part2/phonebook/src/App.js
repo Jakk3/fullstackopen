@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 import PersonsService from './services/PersonsService'
 
 const App = () => {
@@ -21,6 +22,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
   const [namesToShow, setNamesToShow] = useState(persons)
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [success, setSuccess] = useState(false)
 
   const addName = (event) => {
     event.preventDefault()
@@ -34,6 +37,7 @@ const App = () => {
       }
     }
 
+    // UPDATE PERSON
     if (nameExists) {
       if (window.confirm((`${newName} already exists, update phone number?`))) {
         const updatedPerson = { name: newName, number: newNumber }
@@ -43,9 +47,14 @@ const App = () => {
             setPersons(tempPersons)
             setNamesToShow(tempPersons)
             setFilterName('')
+            createNotification('Updated ' + persons[personIndex].name, true)
+          })
+          .catch(error => {
+            createNotification('Information of ' + persons[personIndex].name + 'has already been removed from the server', false)
           })
 
       }
+      // CREATE NEW PERSON
     } else {
       const newPerson = { name: newName, number: newNumber }
       setPersons(persons.concat(newPerson))
@@ -53,8 +62,18 @@ const App = () => {
       setNewNumber('')
       setNamesToShow(persons.concat(newPerson))
       PersonsService.add(newPerson)
+      createNotification('Added ' + newPerson.name, true)
     }
+  }
 
+  const createNotification = (message, success) => {
+    setNotificationMessage(message)
+    setSuccess(success)
+    notificationHide()
+  }
+
+  const notificationHide = () => {
+    setTimeout(() => setNotificationMessage(null), 3000);
   }
 
   const handleNameChange = (event) => {
@@ -72,16 +91,20 @@ const App = () => {
   const deletePerson = (id, name) => e => {
     if (window.confirm('Delete ' + name)) {
       PersonsService.del(id)
-      const tempPersons = persons.filter(p => p.id !== id)
-      setPersons(tempPersons)
-      setFilterName('')
-      setNamesToShow(tempPersons)
+        .then(response => {
+          const tempPersons = persons.filter(p => p.id !== id)
+          setPersons(tempPersons)
+          setFilterName('')
+          setNamesToShow(tempPersons)
+          createNotification(name + ' has been deleted from the server', true)
+        })
     }
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} success={success} />
       <Filter filterName={filterName} handleFilterChange={handleFilterChange} />
 
       <h2>add a new contact</h2>

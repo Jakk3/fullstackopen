@@ -2,7 +2,7 @@
   "persons": [
     {
       "name": "Arto Hellas",
-      "number": "414-123-414",
+      "number": "441-41415-151",
       "id": 1
     },
     {
@@ -24,6 +24,16 @@
       "name": "Aaron Burr, sir",
       "number": "13-515-5515-62",
       "id": 6
+    },
+    {
+      "name": "George Washington",
+      "number": "133-5151-5151",
+      "id": 7
+    },
+    {
+      "name": "John Laurens",
+      "number": "14-5151-1515",
+      "id": 8
     }
   ]
 }
