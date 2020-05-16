@@ -1,0 +1,7 @@
+POST http://localhost/api/persons
+content-type: application/json
+
+{
+  "name": "George Washington",
+  "number": "414-1414-151"
+}
