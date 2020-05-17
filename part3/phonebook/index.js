@@ -1,8 +1,11 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+const cors = require('cors')
 
 app.use(express.json())
+app.use(cors())
+app.use(express.static('build'))
 
 morgan.token('body', function (req, res) {
   return JSON.stringify(req.body)
@@ -19,7 +22,7 @@ app.use(morgan(function (tokens, req, res) {
   ].join(' ')
 }))
 
-const port = process.env.PORT || 80
+const port = process.env.PORT || 3001
 
 let persons = [
   {
@@ -62,21 +65,20 @@ app.post('/api/persons', (req, res) => {
   const name = req.body.name
   const number = req.body.number
 
-  if (persons.map(p => p.name === name)) {
+  if (persons.find(p => p.name === name)) {
     res.status(400).json({ error: 'name must be unique' })
   } else if (name && number) {
     persons.push({ name, number, id })
     res.status(200).end()
-  } else
+  } else {
     res.status(400).json({ error: 'name or number missing' })
-
+  }
 
 })
 
 app.delete('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id)
   persons = persons.filter(person => person.id !== id)
-
   res.status(204).end()
 })
 
