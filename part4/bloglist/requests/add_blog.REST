@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "There are approximately 1,010,300 words in the English Language, but I could never string enough words together to properly express how much I want to hit you with a chair",
+  "author": "Alexander Hamilton",
+  "url": "http://www.blogspot.com/ah/jeffersson_is_a_tool",
+  "likes": 420
+}
