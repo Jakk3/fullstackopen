@@ -50,19 +50,26 @@ const App = () => {
             createNotification('Updated ' + persons[personIndex].name, true)
           })
           .catch(error => {
-            createNotification('Information of ' + persons[personIndex].name + 'has already been removed from the server', false)
+            createNotification(error.response.data.error, false)
           })
 
       }
       // CREATE NEW PERSON
     } else {
       const newPerson = { name: newName, number: newNumber }
-      setPersons(persons.concat(newPerson))
-      setNewName('')
-      setNewNumber('')
-      setNamesToShow(persons.concat(newPerson))
+
       PersonsService.add(newPerson)
-      createNotification('Added ' + newPerson.name, true)
+        .then(response => {
+          createNotification('Added ' + newPerson.name, true)
+          setPersons(persons.concat(newPerson))
+          setNewName('')
+          setNewNumber('')
+          setNamesToShow(persons.concat(newPerson))
+        })
+        .catch(error => {
+          createNotification(error.response.data.error, false)
+        })
+
     }
   }
 
@@ -97,6 +104,9 @@ const App = () => {
           setFilterName('')
           setNamesToShow(tempPersons)
           createNotification(name + ' has been deleted from the server', true)
+        })
+        .catch(error => {
+          createNotification(error.response.data.error, false)
         })
     }
   }

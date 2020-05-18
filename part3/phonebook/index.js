@@ -8,6 +8,7 @@ app.use(express.json())
 app.use(cors())
 app.use(express.static('build'))
 
+// eslint-disable-next-line no-unused-vars
 morgan.token('body', function (req, res) {
   return JSON.stringify(req.body)
 })
@@ -71,7 +72,7 @@ app.put('/api/persons/:id', (req, res, next) => {
     name: req.body.name,
     number: req.body.number
   }
-  Person.findByIdAndUpdate(id, person, { new: true })
+  Person.findByIdAndUpdate(id, person, { new: true, runValidators: true })
     .then(updatedPerson => {
       res.json(updatedPerson)
     })
@@ -81,7 +82,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 app.delete('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
   Person.findByIdAndRemove(id)
-    .then(result => {
+    .then(() => {
       res.status(204).end()
     })
     .catch(err => next(err))
@@ -90,7 +91,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
 app.get('/info', (req, res) => {
   Person.find({})
     .then(persons => {
-      res.send("<p> Phonebook has info for " + persons.length + " people.</p> " + "<p>" + Date() + "</p>")
+      res.send('<p> Phonebook has info for ' + persons.length + ' people.</p> ' + '<p>' + Date() + '</p>')
     })
 })
 
@@ -105,6 +106,8 @@ const errorHandler = (err, req, res, next) => {
 
   if (err.name === 'CastError') {
     return res.status(400).send({ error: 'malformatted id' })
+  } else if (err.name === 'ValidationError') {
+    return res.status(400).json({ error: err.message })
   }
 
   next(err)
