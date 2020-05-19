@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRob21hcyIsImlkIjoiNWVjNDVhODg1MTI4MDIxY2ZjODM1ZjA3IiwiaWF0IjoxNTg5OTI2NTUwfQ.__zckDJIcE485Pqs75snib2DUUSg-FsJDgUBVzpuXoM
 
 {
-  "title": "There are approximately 1,010,300 words in the English Language, but I could never string enough words together to properly express how much I want to hit you with a chair",
-  "author": "Alexander Hamilton",
-  "url": "http://www.blogspot.com/ah/jeffersson_is_a_tool",
-  "likes": 420
+  "title": "What Did I Miss?",
+  "author": "Thomas Jeffersson",
+  "url": "http://www.blogspot.com/ah/reynolds",
+  "likes": 12
 }

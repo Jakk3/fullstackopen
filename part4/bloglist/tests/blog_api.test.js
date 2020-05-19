@@ -7,11 +7,12 @@ const api = supertest(app)
 
 const initialBlogs = [
   {
-    _id: "5a422a851b54a676234d17f7",
+    _id: "5ec461c06fa6733e748f4ab6",
     title: "React patterns",
     author: "Michael Chan",
     url: "https://reactpatterns.com/",
     likes: 7,
+    user: "5ec461c06fa6733e748f4ab6",
     __v: 0
   },
   {
@@ -56,6 +57,8 @@ const initialBlogs = [
   }
 ]
 
+let token = null
+
 beforeEach(async () => {
   // delete all blogs from test database
   await Blog.deleteMany({})
@@ -67,73 +70,80 @@ beforeEach(async () => {
 
   // Promise.all(arr) waits untill all of the promises in the array have been completed
   await Promise.all(promiseArray)
+
+  const login = await api.post('/api/login').send({ username: "Hamilton", password: "supersecret" })
+  token = login.body.token
 })
 
-// test('all blogs are returned', async () => {
-//   const response = await api.get('/api/blogs')
-//   expect(response.body).toHaveLength(initialBlogs.length)
-// })
+test('all blogs are returned', async () => {
+  const response = await api.get('/api/blogs')
+  expect(response.body).toHaveLength(initialBlogs.length)
+})
 
-// test('returned blog has field "id", not "_id"', async () => {
-//   const response = await api.get('/api/blogs')
-//   expect(response.body[0].id).toBeDefined()
-// })
+test('returned blog has field "id", not "_id"', async () => {
+  const response = await api.get('/api/blogs')
+  expect(response.body[0].id).toBeDefined()
+})
 
-// test('valid blog is posted to database', async () => {
-//   const blog = {
-//     title: "Thomas Jeffersson was right",
-//     author: "Michael Chan",
-//     url: "https://reactpatterns.com/thomas",
-//     likes: 32,
-//   }
+test('valid blog is posted to database', async () => {
+  const blog = {
+    title: "Thomas Jeffersson was right",
+    author: "Michael Chan",
+    url: "https://reactpatterns.com/thomas",
+    likes: 32,
+  }
 
-//   await api
-//     .post('/api/blogs')
-//     .send(blog)
-//     .expect(200)
-//     .expect('Content-type', /application\/json/)
+  await api
+    .post('/api/blogs')
+    .set('Authorization', 'bearer ' + token)
+    .send(blog)
+    .expect(201)
+    .expect('Content-type', /application\/json/)
 
-//   const notesAtEnd = await api.get('/api/blogs')
-//   expect(notesAtEnd.body).toHaveLength(initialBlogs.length + 1)
+  const notesAtEnd = await api.get('/api/blogs')
+  expect(notesAtEnd.body).toHaveLength(initialBlogs.length + 1)
 
-//   const titles = notesAtEnd.body.map(r => r.title)
-//   expect(titles).toContain(blog.title)
-// })
+  const titles = notesAtEnd.body.map(r => r.title)
+  expect(titles).toContain(blog.title)
+})
 
-// test('blog missing likes defaults to 0', async () => {
-//   const blog = {
-//     title: "Thomas Jeffersson was right",
-//     author: "Michael Chan",
-//     url: "https://reactpatterns.com/thomas"
-//   }
+test('blog missing likes defaults to 0', async () => {
+  const blog = {
+    title: "Thomas Jeffersson was right",
+    author: "Michael Chan",
+    url: "https://reactpatterns.com/thomas"
+  }
 
-//   const response = await api
-//     .post('/api/blogs')
-//     .send(blog)
-//     .expect(200)
-//     .expect('Content-type', /application\/json/)
+  const response = await api
+    .post('/api/blogs')
+    .set('Authorization', 'bearer ' + token)
+    .send(blog)
+    .expect(201)
+    .expect('Content-type', /application\/json/)
 
-//   expect(response.body.likes).toBe(0)
-// })
+  expect(response.body.likes).toBe(0)
+})
 
-// test('blog missing title or url returns 404', async () => {
-//   const blog = {
-//     author: "Michael Chan",
-//     url: "https://reactpatterns.com/thomas",
-//     likes: 31
-//   }
+test('blog missing title or url returns 404', async () => {
+  const blog = {
+    author: "Michael Chan",
+    url: "https://reactpatterns.com/thomas",
+    likes: 31
+  }
 
-//   await api
-//     .post('/api/blogs')
-//     .send(blog)
-//     .expect(404)
-// })
+  await api
+    .post('/api/blogs')
+    .set('Authorization', 'bearer ' + token)
+    .send(blog)
+    .expect(404)
+})
 
 test('deleting a blog', async () => {
   const response = await api.get('/api/blogs')
   const id = response.body[0].id
   await api
     .delete(`/api/blogs/${id}`)
+    .set('Authorization', 'bearer ' + token)
     .expect(200)
 })
 
