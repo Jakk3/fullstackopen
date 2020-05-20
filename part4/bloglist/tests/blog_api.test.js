@@ -12,7 +12,6 @@ const initialBlogs = [
     author: "Michael Chan",
     url: "https://reactpatterns.com/",
     likes: 7,
-    user: "5ec461c06fa6733e748f4ab6",
     __v: 0
   },
   {
@@ -139,8 +138,21 @@ test('blog missing title or url returns 404', async () => {
 })
 
 test('deleting a blog', async () => {
-  const response = await api.get('/api/blogs')
-  const id = response.body[0].id
+  const blog = {
+    title: "Thomas Jeffersson was right",
+    author: "Michael Chan",
+    url: "https://reactpatterns.com/thomas",
+    likes: 32,
+  }
+
+  const newBlog = await api
+    .post('/api/blogs')
+    .set('Authorization', 'bearer ' + token)
+    .send(blog)
+
+
+  const id = newBlog.body.id
+
   await api
     .delete(`/api/blogs/${id}`)
     .set('Authorization', 'bearer ' + token)
