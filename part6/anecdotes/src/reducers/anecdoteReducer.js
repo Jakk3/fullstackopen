@@ -53,9 +53,6 @@ const sortAnecdotes = (anecdotes) => {
 }
 
 const reducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action.type)
-
   switch (action.type) {
     case 'ADD_VOTE':
       const anecdoteToVote = state.find(a => a.id === action.data.id)
