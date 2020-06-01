@@ -21,6 +21,11 @@ app.use('/api/users', usersRouter)
 const loginRouter = require('./controllers/login')
 app.use('/api/login', loginRouter)
 
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/tests')
+  app.use('/api/testing', testingRouter)
+}
+
 
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
 

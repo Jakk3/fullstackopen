@@ -79,7 +79,7 @@ const App = () => {
       blogFormRef.current.toggleVisibility()
       const blog = await blogService.add(newBlog)
       setBlogs(blogs.concat(blog))
-      createNotification(`new blog '${blog.title}' by ${blog.author}`, true)
+      createNotification(`Blog created:  '${blog.title}' by ${blog.author}`, true)
     } catch (exception) {
       createNotification('Blog creation failed', false)
     }
@@ -148,9 +148,11 @@ const App = () => {
         />
       </Togglable>
       <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-      {
-        blogs.map(blog => <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} user={user} />)
-      }
+      <div id="blogs">
+        {
+          blogs.map(blog => <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} user={user} />)
+        }
+      </div>
     </>
   )
 
