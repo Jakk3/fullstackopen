@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch()
-  const addAnecdote = e => {
+  const addAnecdote = async e => {
     e.preventDefault()
     const content = e.target.content.value
     e.target.content.value = ''

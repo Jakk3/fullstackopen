@@ -1,11 +1,16 @@
 const notificationAtStart = 'I am a notification, boi'
 
-export const setNotification = (notification) => {
-  return {
-    type: 'SET_NOTIFICATION',
-    data: {
-      notification
-    }
+export const setNotification = (notification, timeOut) => {
+  return dispatch => {
+    dispatch({
+      type: 'SET_NOTIFICATION',
+      data: { notification }
+    })
+    setTimeout(() => {
+      dispatch({
+        type: 'REMOVE_NOTIFICATION'
+      })
+    }, timeOut * 1000)
   }
 }
 
